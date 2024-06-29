@@ -76,7 +76,8 @@
         let links = [];
 
         // 读取 links.txt 文件
-        fetch('links.txt')
+        //fetch('links.txt')
+        fetch('https://iseaqua.github.io/blogs/links.txt')
             .then(response => response.text())
             .then(text => {
                 parseLinks(text);
