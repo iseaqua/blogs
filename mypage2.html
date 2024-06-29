@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>個人門戶網頁</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            display: grid;
+            grid-template-columns: 65% 35%;
+            gap: 20px;
+        }
+        .section {
+            margin-bottom: 20px; /* 调整模块之间的间距 */
+        }
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .link-item {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .chart-container {
+            width: 100%;
+            height: 400px;
+        }
+        .full-width {
+            grid-column: span 2;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 匯率走勢圖 -->
+        <div class="section" id="exchange-rate-chart">
+            <h2>美元兌離岸人民幣匯率走勢圖</h2>
+            <div class="chart-container">
+                <div class="tradingview-widget-container">
+                    <div id="tradingview_fcc36"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 常用網址鏈接 -->
+        <div class="section" id="links-section">
+            <h2>個人常用網址鏈接</h2>
+            <div class="links-grid" id="links-grid">
+                <!-- 網址鏈接項目將在這裡插入 -->
+            </div>
+        </div>
+
+        <!-- 必应翻译 -->
+        <div class="section full-width">
+            <h2>必应翻译</h2>
+            <iframe src="https://www.bing.com/translator" width="100%" height="400"></iframe> <!-- 缩小翻译模块的高度 -->
+        </div>
+    </div>
+
+    <script>
+        const linksGrid = document.getElementById('links-grid');
+        let links = [];
+        const linksUrl = 'https://iseaqua.github.io/blogs/links.txt'; // 替换为你的网络地址
+
+        // 读取 links.txt 文件
+        fetch(linksUrl)
+            .then(response => response.text())
+            .then(text => {
+                parseLinks(text);
+                renderLinks();
+            })
+            .catch(error => console.error('Error fetching links.txt:', error));
+
+        function parseLinks(content) {
+            links = content.split('\n').map(line => {
+                const [name, url] = line.split(',');
+                return { name, url };
+            }).filter(link => link.name && link.url); // 确保每行都有名称和URL
+        }
+
+        function renderLinks() {
+            linksGrid.innerHTML = '';
+            links.forEach(link => {
+                const linkItem = document.createElement('div');
+                linkItem.className = 'link-item';
+                linkItem.innerHTML = `<a href="${link.url}" target="_blank">${link.name}</a>`;
+                linksGrid.appendChild(linkItem);
+            });
+        }
+    </script>
+
+    <!-- TradingView Widget BEGIN -->
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script type="text/javascript">
+    new TradingView.widget(
+    {
+        "width": "100%",
+        "height": 400,
+        "symbol": "OANDA:USDCNH",
+        "interval": "1",
+        "timezone": "Etc/UTC",
+        "theme": "light",
+        "style": "1",
+        "locale": "zh_CN",
+        "toolbar_bg": "#f1f3f6",
+        "enable_publishing": false,
+        "withdateranges": true,
+        "hide_side_toolbar": false,
+        "allow_symbol_change": true,
+        "details": true,
+        "studies": [
+            "MACD@tv-basicstudies"
+        ],
+        "container_id": "tradingview_fcc36"
+    }
+    );
+    </script>
+    <!-- TradingView Widget END -->
+</body>
+</html>
