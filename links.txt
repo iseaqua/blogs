@@ -2,5 +2,4 @@ Google,https://www.google.com
 YouTube,https://www.youtube.com
 X,https://x.com
 BBC,https://www.bbc.com
-YouTube,https://www.youtube.com
-X,https://x.com
+Reddit,https://www.reddit.com
