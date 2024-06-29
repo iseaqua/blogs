@@ -3,3 +3,8 @@ YouTube,https://www.youtube.com
 X,https://x.com
 BBC,https://www.bbc.com
 Reddit,https://www.reddit.com
+Google,https://www.google.com
+YouTube,https://www.youtube.com
+X,https://x.com
+BBC,https://www.bbc.com
+Reddit,https://www.reddit.com
