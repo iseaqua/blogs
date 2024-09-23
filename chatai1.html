@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #chat-box { height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; }
+        #chat-input { width: 80%; padding: 10px; }
+        #send-btn { padding: 10px; }
+    </style>
+</head>
+<body>
+
+    <h1>AI Chatbot</h1>
+    <div id="chat-box"></div>
+
+    <input type="text" id="chat-input" placeholder="Ask something..." />
+    <button id="send-btn">Send</button>
+
+    <script>
+        const chatBox = document.getElementById('chat-box');
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        sendBtn.addEventListener('click', async () => {
+            const userMessage = chatInput.value;
+            if (!userMessage) return;
+
+            // Append the user's message to the chat box
+            chatBox.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`;
+
+            // Send the message to Cloudflare Worker
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: userMessage })
+            });
+            const data = await response.json();
+
+            // Append the AI's response to the chat box
+            chatBox.innerHTML += `<p><strong>AI:</strong> ${data.reply}</p>`;
+            chatInput.value = '';
+        });
+    </script>
+</body>
+</html>
