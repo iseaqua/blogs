@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDNS Status</title>
+</head>
+<body>
+    <h1>当前IP地址</h1>
+    <div id="ip-display"></div>
+
+    <script>
+        const hostname = 'your.hostname.com'; // 替换为您的域名
+        const apiUrl = `https://your-cloudflare-worker-url/update?hostname=${hostname}`;
+
+        async function fetchIp() {
+            const response = await fetch(apiUrl);
+            const data = await response.text();
+            document.getElementById('ip-display').innerText = data;
+        }
+
+        // 定期更新IP地址
+        setInterval(fetchIp, 60000); // 每60秒更新一次
+        fetchIp(); // 初次加载时获取
+    </script>
+</body>
+</html>
