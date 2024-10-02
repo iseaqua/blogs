@@ -1,27 +1,36 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DDNS Status</title>
+    <title>最近上报的 IP</title>
 </head>
 <body>
-    <h1>当前IP地址</h1>
-    <div id="ip-display"></div>
+    <h1>最近上报的 IP</h1>
+    <div id="latest-report">
+        <p>IP: <span id="ip"></span></p>
+        <p>上报时间: <span id="timestamp"></span></p>
+    </div>
 
     <script>
-        const hostname = 'your.hostname.com'; // 替换为您的域名
-        const apiUrl = `https://seaq-ddns.seaqua.workers.dev/update?hostname=${hostname}`;
-
-        async function fetchIp() {
-            const response = await fetch(apiUrl);
-            const data = await response.text();
-            document.getElementById('ip-display').innerText = data;
+        async function fetchLatestReport() {
+            try {
+                const response = await fetch('https://seaq-ddns.seaqua.workers.dev/latest'); // 替换为您的 Worker URL
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('ip').innerText = data.ip || '无数据';
+                    document.getElementById('timestamp').innerText = data.timestamp || '无数据';
+                } else {
+                    console.error('获取数据失败:', response.statusText);
+                }
+            } catch (error) {
+                console.error('网络错误:', error);
+            }
         }
 
-        // 定期更新IP地址
-        setInterval(fetchIp, 60000); // 每60秒更新一次
-        fetchIp(); // 初次加载时获取
+        // 每 5 秒刷新一次数据
+        fetchLatestReport();
+        setInterval(fetchLatestReport, 5000);
     </script>
 </body>
 </html>
