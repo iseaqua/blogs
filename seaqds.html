@@ -13,7 +13,7 @@
   <script>
     async function fetchLastReported() {
       try {
-        // 从 /latest 路径获取 JSON 数据
+        // 完整路径请求 Cloudflare Workers 的 /latest 接口
         const response = await fetch('https://seaq-ddns.seaqua.workers.dev/latest');
         const data = await response.json();
 
