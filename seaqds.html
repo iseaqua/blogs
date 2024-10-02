@@ -14,7 +14,7 @@
     async function fetchLastReported() {
       try {
         // 从 /latest 路径获取 JSON 数据
-        const response = await fetch('/latest');
+        const response = await fetch('https://seaq-ddns.seaqua.workers.dev/latest');
         const data = await response.json();
 
         // 将数据显示在 HTML 中
