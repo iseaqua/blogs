@@ -6,57 +6,59 @@
     <style>
         body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
         select, textarea, button { width: 100%; margin-bottom: 10px; padding: 10px; }
-        #responseOutput { margin-top: 20px; white-space: pre-wrap; }
+        #responseOutput { margin-top: 20px; white-space: pre-wrap; } /* 保持响应输出的格式 */
     </style>
 </head>
 <body>
     <h1>Cloudflare AI Chat</h1>
-    <select id="modelSelect"></select>
-    <textarea id="messageInput" placeholder="输入你的消息..." rows="4"></textarea>
-    <button id="sendButton">发送</button>
-    <div id="responseOutput"></div>
+    <select id="modelSelect"></select> <!-- 模型选择下拉框 -->
+    <textarea id="messageInput" placeholder="输入你的消息..." rows="4"></textarea> <!-- 消息输入框 -->
+    <button id="sendButton">发送</button> <!-- 发送按钮 -->
+    <div id="responseOutput"></div> <!-- 显示响应的区域 -->
 
     <script>
         // 配置变量
         const WORKER_URL = 'https://seaqllm1.seaqua.workers.dev'; // 替换为你的 Worker URL
 
+        // 定义支持的模型
         const VALID_MODELS = {
-            '@cf/meta/llama-2-7b-chat-int8': 'Llama-2 7B',
-            '@cf/mistral/mistral-7b-instruct-v0.1': 'Mistral 7B',
-            '@cf/openai/gpt-3.5-turbo': 'GPT-3.5 Turbo'
+            '@cf/meta/llama-3.1-8b-instruct-fp8': 'llama-3.1-8b-instruct-fp8',
+            '@cf/microsoft/phi-2': 'microsoft/phi-2',
+            '@hf/mistral/mistral-7b-instruct-v0.2': 'mistral-7b-instruct-v0.2'
         };
 
         // 动态填充模型选择
         const modelSelect = document.getElementById('modelSelect');
         Object.entries(VALID_MODELS).forEach(([key, name]) => {
-            const option = document.createElement('option');
-            option.value = key;
-            option.textContent = name;
-            modelSelect.appendChild(option);
+            const option = document.createElement('option'); // 创建选项元素
+            option.value = key; // 设置选项的值
+            option.textContent = name; // 设置选项的文本
+            modelSelect.appendChild(option); // 将选项添加到下拉框
         });
 
+        // 发送按钮点击事件
         document.getElementById('sendButton').onclick = async () => {
-            const model = modelSelect.value;
-            const message = document.getElementById('messageInput').value;
-            const responseOutput = document.getElementById('responseOutput');
+            const model = modelSelect.value; // 获取选择的模型
+            const message = document.getElementById('messageInput').value; // 获取输入的消息
+            const responseOutput = document.getElementById('responseOutput'); // 获取响应输出区域
 
-            responseOutput.innerText = '正在处理...';
+            responseOutput.innerText = '正在处理...'; // 显示处理中的提示
 
             try {
-                console.log('Sending request to:', WORKER_URL);
+                console.log('Sending request to:', WORKER_URL); // 日志请求的 URL
                 const response = await fetch(WORKER_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ model, message }),
+                    headers: { 'Content-Type': 'application/json' }, // 设置请求头
+                    body: JSON.stringify({ model, message }), // 发送模型和消息作为请求体
                 });
 
-                console.log('Response status:', response.status);
-                const data = await response.json();
-                console.log('Response data:', data);
-                responseOutput.innerText = data.result || data.error || '无响应';
+                console.log('Response status:', response.status); // 日志响应状态
+                const data = await response.json(); // 解析响应数据
+                console.log('Response data:', data); // 日志响应数据
+                responseOutput.innerText = data.result || data.error || '无响应'; // 显示响应结果
             } catch (error) {
-                console.error('Error details:', error);
-                responseOutput.innerText = '发生错误: ' + error.message;
+                console.error('Error details:', error); // 日志错误信息
+                responseOutput.innerText = '发生错误: ' + error.message; // 显示错误信息
             }
         };
     </script>
