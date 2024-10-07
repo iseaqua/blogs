@@ -43,15 +43,19 @@
             responseOutput.innerText = '正在处理...';
 
             try {
+                console.log('Sending request to:', WORKER_URL);
                 const response = await fetch(WORKER_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ model, message }),
                 });
 
+                console.log('Response status:', response.status);
                 const data = await response.json();
+                console.log('Response data:', data);
                 responseOutput.innerText = data.result || data.error || '无响应';
             } catch (error) {
+                console.error('Error details:', error);
                 responseOutput.innerText = '发生错误: ' + error.message;
             }
         };
